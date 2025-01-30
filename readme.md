@@ -21,7 +21,7 @@ Welcome to the Quiz Game! This is a Node.js command-line quiz game where you can
 ## Run the Quiz 
 1. Run this command on the terminal:
     ```bash
-    npx meefr-quiz-test
+    npx meefr-quiz-game
     ```
 
 ## Installation
