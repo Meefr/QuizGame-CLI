@@ -60,12 +60,9 @@ class QuizGame {
       message: "Which Topic do you want?",
       options: this.topics.map((topic) => topic),
     });
-    console.log(topic);
 
     let level = "beginner";
     const local_questions = this.questions[topic];
-    console.log(local_questions);
-
     if (topic === "js") {
       level = await p.select({
         message: "Which level do you want ?",
@@ -79,12 +76,12 @@ class QuizGame {
     for (let i = 0; i < local_questions[level].length; i++) {
       await this.askQuestion(local_questions[level][i], i);
     }
-    const score = this.questions[topic][level].length
+    const score = this.questions[topic][level].length;
     // Decide what ending screen to show based on how many questions user answered correctly
     p.outro(
       `${color.bgMagenta(
         color.black(
-          `You got ${this.totalCorrect} questions correct! out of ${score}`
+          `You got ${this.totalCorrect} questions correct out of ${score} !`
         )
       )}`
     );
@@ -97,7 +94,7 @@ class QuizGame {
       p.outro(
         `${color.bgMagenta(
           color.black(
-            ` MEEFR is stands for [Mohamed Essam Eldeen Fahmy Elramah] `
+            ` MEEFR stands for [Mohamed Essam Eldeen Fahmy Elramah] `
           )
         )}`
       );
@@ -115,17 +112,22 @@ class QuizGame {
       });
       if (showQuestions) {
         await p.outro(
-          color.bgMagenta(
-            color.black(
-              this.wrongQuestionsIndex
-                .map((i) => {
+          color.black(
+            this.wrongQuestionsIndex
+                .map((i, index) => {
                   return `
-                  
-            Questions: ${local_questions[level][i].question}
-            ${local_questions[level][i].code ?local_questions[level][i].code :"" }`;
+                    ${color.red(`Questions: ${index + 1}`)} ${color.white(
+                    local_questions[level][i].question
+                  )}
+          
+                    ${
+                      local_questions[level][i].code
+                        ? color.white(local_questions[level][i].code)
+                        : ""
+                    }
+                    `;
                 })
                 .join("\n")
-            )
           )
         );
         const showAnswers = await p.select({
@@ -137,20 +139,29 @@ class QuizGame {
         });
         if (showAnswers) {
           await p.outro(
-            color.bgMagenta(
-              color.black(
-                this.wrongQuestionsIndex
-                  .map((i) => {
-                    return `
-                Questions: ${local_questions[level][i].question}
-                ${local_questions[level][i].code?local_questions[level][i].code:""}
-                Correct answer is: ${local_questions[level][i].answer}
-                Explanation:
-                ${local_questions[level][i].explanation}
-                          `;
-                  })
-                  .join("\n")
-              )
+            color.black(
+              this.wrongQuestionsIndex
+                .map((i, index) => {
+                  return `
+                    ${color.red(`Questions: ${index + 1}`)} ${color.white(
+                    local_questions[level][i].question
+                  )}
+          
+                    ${
+                      local_questions[level][i].code
+                        ? color.white(local_questions[level][i].code)
+                        : ""
+                    }
+          
+                    ${color.cyan("Correct answer is:")} ${color.green(
+                    local_questions[level][i].answer
+                  )}
+          
+                    ${color.cyan("Explanation:")}
+                    ${color.white(local_questions[level][i].explanation)}
+                    `;
+                })
+                .join("\n")
             )
           );
         }
@@ -181,6 +192,7 @@ class QuizGame {
         this.totalCorrect = 0;
         this.wrongQuestionsIndex = [];
       } while (this.again);
+      p.outro(`${color.bgCyan(color.black(` Thanks for your effort ! `))}`);
     } else {
       this.again = false;
       p.outro(`${color.bgMagenta(color.black(` NOOB! `))}`);
@@ -352,7 +364,7 @@ async function main() {
         explanation:
           "Promises and async/await help manage asynchronous code by providing a cleaner and more readable approach.",
       },
-    ]
+    ],
   };
   const JSquestions = {
     beginner: [
@@ -496,13 +508,12 @@ async function main() {
         explanation:
           "Arrow functions are still considered functions in JavaScript.",
       },
-    ]
+    ],
   };
   const game = new QuizGame();
   game.addQuestions("networks", "Networks", NetworkQuestions);
   game.addQuestions("js", "JavaScript", JSquestions);
   game.start();
 }
-
 
 main().catch(console.error);
